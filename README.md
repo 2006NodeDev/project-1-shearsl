@@ -147,7 +147,7 @@ The ReimbursementType model is used to track what kind of reimbursement is being
 * **Allowed Roles** `admin`
 
 * **Request**
-  The userId must be presen as well as all fields to update, any field left undefined will not be updated.
+  The userId must be present as well as all fields to update, any field left undefined will not be updated.
   ```javascript
     User
   ```
@@ -225,7 +225,7 @@ Reimbursements should be ordered by date
 * **Allowed Roles** `finance-manager`
 
 * **Request**
-  The reimbursementId must be presen as well as all fields to update, any field left undefined will not be updated. This can be used to approve and deny.
+  The reimbursementId must be present as well as all fields to update, any field left undefined will not be updated. This can be used to approve and deny.
   ```javascript
     Reimbursement
   ```
@@ -238,6 +238,6 @@ Reimbursements should be ordered by date
 # Stretch Goals
 These are not part of the core requirements but are things that could be worked on once the core requirements are done.
   * Password Hashing
-  * Paging ans Sorting endpoints: [Reference For How](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design#filter-and-paginate-data)
+  * Paging and Sorting endpoints: [Reference For How](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design#filter-and-paginate-data)
   * Using JSON Web Tokens (JWTs) instead of Session Storage
   * Being able to submit receipts. (I would recommend using AWS S3/GCP Cloud Storage buckets for this but if you do be cautious of including Access Keys in your application)
