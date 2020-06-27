@@ -1,5 +1,5 @@
 {
-  "name": "Lsquared Math",
+  "name": "LsquaredMath",
   "version": "1.0.0",
   "description": "A company that promotes mathematics education with software, school visits, and games.",
   "main": "src/index.ts",
