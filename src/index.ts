@@ -1,0 +1,1 @@
+console.log('Lsquared Math app works.')
