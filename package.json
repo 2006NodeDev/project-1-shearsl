@@ -1,0 +1,30 @@
+{
+  "name": "lsquaredmath",
+  "version": "1.0.0",
+  "description": "A company that promotes mathematics education with software, school visits, and games.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2006NodeDev/project-0-shearsl.git"
+  },
+  "keywords": [
+    "math",
+    "games",
+    "motivational",
+    "speakers",
+    "learning",
+    "objects",
+    "interactive",
+    "scos",
+    "scorm"
+  ],
+  "author": "Laura Shears",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2006NodeDev/project-0-shearsl/issues"
+  },
+  "homepage": "https://github.com/2006NodeDev/project-0-shearsl#readme"
+}
