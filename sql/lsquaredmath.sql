@@ -142,7 +142,14 @@ create table reimbursement (
   );
   
 
-select firstname fname, lastname lname, workroles, roleid from
-	 ( select * from users natural join roles where roleid < 5) as "admin";
+select userid, firstname fname, lastname lname, workroles, roleid from
+	 ( select * from users natural join roles where roleid<10) as Adminteam order by roleid;
 	
+select * from
+	 ( select * from users natural join roles) as Adminteam order by roleid;	
+	
+--- update Jodi from role 10 developer to role 8 tester
+update users set roleid = 10 where userid = 24;
+
+select * from users natural join roles;
  
