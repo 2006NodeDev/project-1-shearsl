@@ -233,7 +233,20 @@ Reimbursements should be ordered by date
 * **Response:**
     ```javascript
       Reimbursement
-    ```
+  
+ ```   ```
+# Goals
+1. Write up authentication middleware
+2. Write out login
+3. Make a user router
+4. Write out User Endpoints
+5. make a reimbursements router
+6. write out reimb endpoints
+7. write up authorization middware
+8. write up database
+9. write DAO to link DB to Codeoals 
+```
+
 
 # Stretch Goals
 These are not part of the core requirements but are things that could be worked on once the core requirements are done.
