@@ -34,6 +34,9 @@ insert into roles (workroles)
 values ('projectmanager');
 
 insert into roles (workroles)
+values ('itsecurity');
+
+insert into roles (workroles)
 values('developer');
 
 
@@ -143,13 +146,17 @@ create table reimbursement (
   
 
 select userid, firstname fname, lastname lname, workroles, roleid from
-	 ( select * from users natural join roles where roleid<10) as Adminteam order by roleid;
+	 ( select * from users natural join roles where not roleid=10) as Adminteam order by roleid;
 	
 select * from
-	 ( select * from users natural join roles) as Adminteam order by roleid;	
+	 ( select * from users natural join roles) as Adminteam order by roleid, userid;	
 	
 --- update Jodi from role 10 developer to role 8 tester
-update users set roleid = 10 where userid = 24;
+update users set roleid = 8 where userid = 24;
 
 select * from users natural join roles;
+
+select * from users;
+
+select * from roles;
  

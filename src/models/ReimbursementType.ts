@@ -4,5 +4,5 @@
 export class ReimbursementType
 {
   typeId: number; // primary key
-  type: string // not null, unique
+  reimburseType: string // not null, unique
 }
