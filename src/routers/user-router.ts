@@ -1,10 +1,12 @@
 import e, { Request, Response, NextFunction } from 'express';
 //import { UserNotFoundError } from '../errors/UserNotFoundError';
 import { UserIdError } from '../errors/UserIdError';
-import { UserInputError } from '../errors/UserInputError';
-//import { User } from '../models/User'
-import { getAllUsers, findUserById } from '../daos/user-daos';
-import { PoolClient } from 'pg';
+import { UserInputError, UserInputError2 } from '../errors/UserInputError';
+import { User } from '../models/User'
+import { getAllUsers, findUserById, saveOneUser, updateUserById } from '../daos/user-daos';
+//import { authorizationMiddleware } from '../middleware/authorization-middleware';
+//import { PoolClient } from 'pg';
+//import { User } from '../models/User';
 
 export let userRouter = e.Router();  //router already has the path '/users'
 
@@ -18,25 +20,57 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     }
 });  
 
-
-userRouter.post('/', (req: Request, res: Response) => {
-    console.log(req.body);
-    let client:PoolClient;
-    let insertStr:string;
-    let { username, password, firstname, lastname, email, roleid } = req.body //destructuring
-    if (username && password && firstname && lastname && email && roleid) {
-        insertStr = `insert into users (userName, userPassword, firstName, lastName, email, roleId)
-                 values (${username}, ${password}, ${firstname}, ${lastname}, ${email}, ${roleid})`;
-        client.query(insertStr, (req, res)=>{});  //code similar to code found at:
-        res.sendStatus(201);                      // https://kb.objectrocket.com/postgresql/how-to-use-nodejs-to-insert-into-a-postgresql-table-958
+//update a user selected by id
+userRouter.patch('/:id', async(req:Request, res:Response, next:NextFunction) =>{
+    let { id } = req.params;
+    let { username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
+    if (isNaN(+id)) {
+        next(new UserIdError());
+    } else if (username || userpassword || firstname || lastname || email || roleid){
+        let partialUser:User = { 
+            userid: +id, 
+            username:(username?username:""), 
+            userpassword:(userpassword?userpassword:""), 
+            firstname:(firstname?firstname:""), 
+            lastname:(lastname?lastname:""), 
+            email:(email?email:""), 
+            roleid:(roleid?roleid:0) 
+        }
+        try { 
+            let user = await updateUserById(partialUser);
+            res.json(user);
+        } catch (e) {
+            next(e);
+        }
     } else {
-        //res.status(400).send("Please enter all required information.");
-        throw new UserInputError();
+        next(new UserInputError2); 
     }
-});  
+});
 
 
-userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+
+//save a new user
+userRouter.post('/', /*authorizationMiddleware(['Admin']),*/ async (req: Request, res: Response, next: NextFunction) => {
+    // get input from the user
+    let { username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
+
+    //verify the input
+    if (username && userpassword && firstname && lastname && roleid){
+        let newUser:User = { userid:0, username, userpassword, firstname, lastname, email, roleid }
+        newUser.email = email || null;
+        try { //try with a function call to the dao layer to try and save the user
+            let savedUser = await saveOneUser(newUser)
+            res.json(savedUser)// needs to have the updated userId
+        } catch (e) {
+            next(e)
+        }
+    } else  {
+        next(new UserInputError);    
+    }
+})  
+
+
+userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => { 
     let { id } = req.params;
     if (isNaN(+id)) {
         next(new UserIdError());

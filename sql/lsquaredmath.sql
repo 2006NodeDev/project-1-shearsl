@@ -149,10 +149,17 @@ select userid, firstname fname, lastname lname, workroles, roleid from
 	 ( select * from users natural join roles where not roleid=10) as Adminteam order by roleid;
 	
 select * from
-	 ( select * from users natural join roles) as Adminteam order by roleid, userid;	
+	 ( select * from users natural join roles) as Adminteam order by roleid, userid;
+	
+select * from
+	 ( select * from users natural join roles) as team
+	 
 	
 --- update Jodi from role 10 developer to role 8 tester
 update users set roleid = 8 where userid = 24;
+
+---update Jodi in general where it is not necessarily known which fields will be updated
+put users Jodi
 
 select * from users natural join roles;
 
@@ -160,3 +167,17 @@ select * from users;
 
 select * from roles;
  
+delete from users where username = 'aleckb';
+
+-- Set up a cursor - code found at: https://www.postgresql.org/docs/8.2/sql-fetch.html
+begin;
+DECLARE usercursor SCROLL CURSOR FOR SELECT * FROM users;
+-- Fetch the first 5 rows in the cursor usercursor:
+FETCH FORWARD 5 FROM usercursor;
+-- Fetch the previous row:
+FETCH PRIOR FROM usercursor;
+fetch backward 2 from usercursor;
+fetch forward 2 from usercursor;
+fetch next from usercursor;
+close usercursor;
+commit;
