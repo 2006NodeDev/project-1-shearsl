@@ -3,9 +3,6 @@ import { connectionPool } from ".";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserInputError } from "../errors/UserInputError";
 import { User } from "../models/User";
-//import { userRouter } from "../routers/user-router";
-//import { UserInputError } from "../errors/UserInputError";
-//import e from "express";
 
 
 export async function getAllUsers(){
@@ -73,7 +70,6 @@ export async function findUserById(id:number){
                                 u."roleid" 
                                 from lsquaredmath.users u
                                 where u.userid = ${id}`);
-        console.log("made it here " + id);
         if(results.rowCount===0){ 
             throw new Error('NotFound');
         }else{
@@ -92,44 +88,61 @@ export async function findUserById(id:number){
 
 export async function updateUserById(partUser:User){ //id is embedded into the partial user information
     let client: PoolClient;
-    let updatedUser:User;
-    try{  
+    //let updatedUser: User;
+    let results: QueryResult;
+    try{    
         client = await connectionPool.connect();
         await client.query('BEGIN;')//start a transaction
         //update values for any values that were passed in
         if(partUser.username){  
-            let results = await client.query(`update lsquaredmath.users set username=$1 where userid=$2`,
+            await client.query(`update lsquaredmath.users set username=$1 where userid=$2`,
                                             [partUser.username, partUser.userid]);
-            updatedUser.username = results.rows[0].username;
+        }else{
+            results = await client.query(`select firstname from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.username = results.rows.values.toString();
         }
+        
         if(partUser.firstname){ 
-            let results = await client.query(`update lsquaredmath.users set firstname=$1 where userid=$2`,
-                                            [partUser.firstname, ]);
-            updatedUser.firstname = results.rows[0].firstname;
+            await client.query(`update lsquaredmath.users set firstname=$1 where userid=$2`,
+                                            [partUser.firstname, partUser.userid]);
+        } else {
+            results = await client.query(`select firstname from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.firstname = results.rows.values.toString();
         }
+        
         if(partUser.lastname){ 
-            let results = await client.query(`update lsquaredmath.users set lastname=$1 where userid=$2`,
-            [partUser.lastname, partUser.userid]);
-            updatedUser.firstname = results.rows[0].lastname;
+            await client.query(`update lsquaredmath.users set lastname=$1 where userid=$2`,
+                                            [partUser.lastname, partUser.userid]);
+        }else{
+            results = await client.query(`select lastname from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.lastname = results.rows.values.toString();
         }
+        
         if(partUser.userpassword){ 
-            let results = await client.query(`update lsquaredmath.users set userpassword=$1 where userid=$2`,
-            [partUser.userpassword, partUser.userid]);
-            updatedUser.firstname = results.rows[0].userpassword;
+            await client.query(`update lsquaredmath.users set userpassword=$1 where userid=$2`,
+                                            [partUser.userpassword, partUser.userid]);
+        }else{
+            results = await client.query(`select userpassword from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.userpassword = results.rows.values.toString();
         }
+     
         if(partUser.email){
-            let results = await client.query(`update lsquaredmath.users set email=$1 where userid=$2`,
-            [partUser.email, partUser.userid]);
-            updatedUser.firstname = results.rows[0].email;
+            await client.query(`update lsquaredmath.users set email=$1 where userid=$2`,
+                                            [partUser.email, partUser.userid]);
+        }else{
+            results = await client.query(`select email from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.email = results.rows.values.toString();
         }
+        
         if(partUser.roleid){  
-            let results = await client.query(`update lsquaredmath.users set roleid=$1 where userid=$2`,
-             [partUser.roleid, partUser.userid]);
-            updatedUser.firstname = results.rows[0].roleid;
+            await client.query(`update lsquaredmath.users set roleid=$1 where userid=$2`,
+                                            [partUser.roleid, partUser.userid]);
+        }else{
+            results = await client.query(`select roleid from lsquaredmath.users where userid = ${partUser.userid}`);
+            partUser.roleid = +results.rows.values;
         }
         await client.query('COMMIT;'); //ends transaction
-        findUserById(partUser.userid);
-        return updatedUser;
+        return partUser;
     }catch(e){
         client && client.query('ROLLBACK;')//if a js error takes place, undo the sql
         if(e.message === 'Role Not Found'){

@@ -24,7 +24,7 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
     //let { id } = req.params;
     let { userid, username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
-    if ((username || userpassword || firstname || lastname || email || roleid)&& userid){
+    if ((username || userpassword || firstname || lastname || email || roleid) && userid){
         if (isNaN(+userid)) {
             next(new UserIdError());
         }
@@ -38,8 +38,9 @@ userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
             roleid:(roleid?roleid:0) 
         }
         try { 
-            let user = await updateUserById(partialUser);
-            res.json(user);
+            await updateUserById(partialUser);
+            let userUpdated = await findUserById(userid);
+            res.json(userUpdated);
         } catch (e) {
             next(e);
         }
