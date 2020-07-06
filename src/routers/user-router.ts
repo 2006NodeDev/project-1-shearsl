@@ -21,14 +21,15 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 });  
 
 //update a user selected by id
-userRouter.patch('/:id', async(req:Request, res:Response, next:NextFunction) =>{
-    let { id } = req.params;
-    let { username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
-    if (isNaN(+id)) {
-        next(new UserIdError());
-    } else if (username || userpassword || firstname || lastname || email || roleid){
+userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
+    //let { id } = req.params;
+    let { userid, username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
+    if ((username || userpassword || firstname || lastname || email || roleid)&& userid){
+        if (isNaN(+userid)) {
+            next(new UserIdError());
+        }
         let partialUser:User = { 
-            userid: +id, 
+            userid: +userid, 
             username:(username?username:""), 
             userpassword:(userpassword?userpassword:""), 
             firstname:(firstname?firstname:""), 
