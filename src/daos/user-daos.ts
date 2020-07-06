@@ -28,7 +28,7 @@ export async function getAllUsers(){
     }
 }
 
-export async function findUserByUsername(uname:string){
+/*export async function findUserByUsername(uname:string){
     let client: PoolClient;
     try{
         client = await connectionPool.connect();
@@ -55,7 +55,7 @@ export async function findUserByUsername(uname:string){
     }finally{
         client && client.release();
     } 
-}
+}*/
 
 export async function findUserById(id:number){ 
     let client: PoolClient;
@@ -145,9 +145,9 @@ export async function updateUserById(partUser:User){ //id is embedded into the p
         return partUser;
     }catch(e){
         client && client.query('ROLLBACK;')//if a js error takes place, undo the sql
-        if(e.message === 'Role Not Found'){
+        //if(e.message === 'Role Not Found'){
             throw new UserInputError();// role not found error
-        }
+        //}
         //if we get an error we don't know 
         console.log(e)
         throw new Error('Unhandled Error Occured');

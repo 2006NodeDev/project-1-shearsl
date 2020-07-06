@@ -1,14 +1,15 @@
 import e from 'express';
-//import e, { Router } from 'express';
 //import { homePageStrStart } from './indexWebPage';
 import { userRouter } from './routers/user-router';
+import { reimbursementRouter } from './routers/reimbursement-router'
 
 const app = e(); //call the express function and get a completed application
 
 app.use(e.json()); //this is an example of middleware
 
 app.use('/users', userRouter);
-//app.use('/reimbusements', reimbursement-router);
+app.use('/reimbursements', reimbursementRouter);
+
 
 
 //The following code catches the user errors generated above which prevents the user from getting a bunch 

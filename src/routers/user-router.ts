@@ -22,7 +22,6 @@ userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 //update a user selected by id
 userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
-    //let { id } = req.params;
     let { userid, username, userpassword, firstname, lastname, email, roleid } = req.body //destructuring
     if ((username || userpassword || firstname || lastname || email || roleid) && userid){
         if (isNaN(+userid)) {

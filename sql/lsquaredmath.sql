@@ -123,27 +123,71 @@ insert into users (username, userpassword, firstname, lastname, email, roleId)
 values('maricruzz', 'password', 'Maricruz', 'Zake', 'maricruzz@fakeemail.com', 10);
 
 create table reimbursementStatus (
-  statusId int primary key,
+  statusId serial primary key,
   status text not null unique
 );
 
+drop table reimbursementstatus;
+drop table reimbursementtype;
+drop table reimbursement;
+
+
+insert into reimbursementStatus (status) values ('Pending');
+insert into reimbursementStatus (status) values ('Approved');
+insert into reimbursementStatus (status) values ('Paid');
+insert into reimbursementStatus (status) values ('Denied');
+
 create table reimbursementType(
-	typeId int primary key,
+	typeId serial primary key,
 	reimburseType text not null unique
 );
+
+
+insert into reimbursementType (reimburseType) values ('Lodging');
+insert into reimbursementType (reimburseType) values ('Travel');
+insert into reimbursementType (reimburseType) values ('Food');
+insert into reimbursementType (reimburseType) values ('Other');
+
+select * from reimbursementType;
+select * from reimbursementStatus;
+
+ 
+
 
 create table reimbursement (
 	reimbursementId serial primary key,
 	userId int references users (userId),  --foreign key
 	amount numeric not null,
-	dateSubmitted date not null,
-	dateResolved date not null,
+	dateSubmitted numeric not null,
+	dateResolved numeric not null,
 	description text not null,
 	resolver int references users (userId),  --foreign key
 	statusId int references reimbursementStatus (statusId),  --foreign key
 	typeId int references reimbursementType (typeId)  --foreign key 
   );
   
+ --using the ISO 8601 standard for dates: YYYYMMDD
+ --statusId: Pending: 1, Approved 2, Paid 3, Dennied 4
+ --typeId: Lodging: 1, Travel: 2, Food: 3, Other: 4
+insert into reimbursement (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(7, 123.54, 20200621, 0, 'supplies for Alien Arithmetic swag', 1, 4);
+
+insert into reimbursement  (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(8, 150.50, 20200628, 20200630, 'Holiday Inn 2 nights', 4, 1);
+
+insert into reimbursement  (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(8, 67.34, 20200628, 20200630, 'mileage, used own car', 4, 2);
+
+insert into reimbursement  (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(8, 45, 20200628, 20200630, '3 meals, standard allowance per meal', 4, 3);
+
+insert into reimbursement  (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(9, 150.50, 20200703, 0, 'Holiday Inn 2 nights', 2, 1);
+
+insert into reimbursement  (userId, amount, datesubmitted, dateresolved, description, statusId, typeId )
+values(9, 45, 2020703, 0, '3 meals, standard allowance per meal', 2, 3);
+
+select * from reimbursement;
 
 select userid, firstname fname, lastname lname, workroles, roleid from
 	 ( select * from users natural join roles where not roleid=10) as Adminteam order by roleid;
@@ -159,7 +203,7 @@ select * from
 update users set roleid = 8 where userid = 24;
 
 ---update Jodi in general where it is not necessarily known which fields will be updated
-put users Jodi
+--put users Jodi
 
 select * from users natural join roles;
 
