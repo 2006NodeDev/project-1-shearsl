@@ -45,3 +45,18 @@ reimbursementRouter.patch('/', async(req:Request, res:Response, next:NextFunctio
         next(new ReimbursementInputError2); 
     }
 });
+
+
+reimbursementRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => { 
+    let { id } = req.params;
+    if (isNaN(+id)) {
+        next(new ReimbursementIdError());
+    } else {
+        try {
+            let user = await findReimbursementById(+id);
+            res.json(user);
+        } catch (e) {
+            next(e);
+        }
+    }
+});
