@@ -1,4 +1,4 @@
-import { Role } from "../models/Role"
+//import { Role } from "../models/Role"
 
 export class UserDTO {
     userid:number
@@ -7,7 +7,7 @@ export class UserDTO {
     firstname:string
     lastname:string
     email:string
-    role:Role[]
+    //role:Role[]
    // role:string
-    //roleid:number
+    roleid:number
 }

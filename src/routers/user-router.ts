@@ -6,7 +6,6 @@ import { User } from '../models/User'
 import { getAllUsers, findUserById, saveOneUser, updateUserById } from '../daos/user-daos';
 //import { authorizationMiddleware } from '../middleware/authorization-middleware';
 //import { PoolClient } from 'pg';
-//import { User } from '../models/User';
 
 export let userRouter = e.Router();  //router already has the path '/users'
 
@@ -29,7 +28,7 @@ userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
         }
         let partialUser:User = { 
             userid: +userid, 
-            username:(username?username:""), 
+            username:(username?username:""), //before the colon is like 'username =', (if truthy, then username else "")
             userpassword:(userpassword?userpassword:""), 
             firstname:(firstname?firstname:""), 
             lastname:(lastname?lastname:""), 

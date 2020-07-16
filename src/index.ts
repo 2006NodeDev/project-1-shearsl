@@ -1,11 +1,13 @@
 import e from 'express';
-//import { homePageStrStart } from './indexWebPage';
 import { userRouter } from './routers/user-router';
-import { reimbursementRouter } from './routers/reimbursement-router'
+import { reimbursementRouter } from './routers/reimbursement-router';
+import { corsFilter } from './middleware/cors-filter';
 
 const app = e(); //call the express function and get a completed application
 
 app.use(e.json()); //this is an example of middleware
+
+app.use(corsFilter);
 
 app.use('/users', userRouter);
 app.use('/reimbursements', reimbursementRouter);

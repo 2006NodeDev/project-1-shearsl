@@ -3,6 +3,7 @@ import { connectionPool } from ".";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserInputError } from "../errors/UserInputError";
 import { User } from "../models/User";
+import { UserDTOtoUserConvertor } from "../utils/UserDTO-to-User-convertor";
 
 
 export async function getAllUsers(){
@@ -18,8 +19,8 @@ export async function getAllUsers(){
                                     u."roleid",
                                     r."workroles"
                                     from lsquaredmath.users u natural join lsquaredmath.roles r
-                                    order by u.roleid`);
-        return results.rows; //.rows.map(); need to write the UserDTOtoUserConvertor.ts and reference it here.
+                                    order by u.roleid`);    
+    return results.rows.map(UserDTOtoUserConvertor);//results.rows; //.rows.map(); need to write the UserDTOtoUserConvertor.ts and reference it here.
     }catch(e){  //error processing coming soon
         console.log(e);
         throw new Error('un-implemented error handling');
@@ -163,16 +164,11 @@ export async function saveOneUser(newUser:User):Promise<User>{
     let client:PoolClient;
     try{  
         client = await connectionPool.connect();
-        //if you have multiple querys, you should make a transaction
-        await client.query('BEGIN;')//start a transaction
-        /*let results =*/ await client.query(`insert into lsquaredmath.users ("username", "firstname", "lastname", "userpassword","email","roleid")
+        await client.query(`insert into lsquaredmath.users ("username", "firstname", "lastname", "userpassword","email","role")
                                         values($1,$2,$3,$4,$5,$6) returning "userid" `,//allows you to return some values from the rows in an insert, update or delete
                                         [newUser.username, newUser.firstname, 
                                         newUser.lastname, newUser.userpassword, 
                                         newUser.email, newUser.roleid]);
-        //newUser.userid = results.rows[0].userid;
-        //console.log(`in save new user newUser.userid = ${newUser.userid}`);
-        await client.query('COMMIT;'); //ends transaction
         return newUser
 
     }catch(e){
