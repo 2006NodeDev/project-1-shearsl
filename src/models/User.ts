@@ -1,6 +1,3 @@
-//import {Role} from "./Role";
-
-
 //The User model keeps track of users information.
 export class User {
   	userid: number = 0; // primary key
@@ -9,6 +6,6 @@ export class User {
 	firstname: string; // not null
 	lastname: string; // not null
 	email: string; // not null
-	roleid:number;
-	//role: Role[]; // not null
+	roleid: number; //foreign key
+	sectionid: number; //foreign key
 }

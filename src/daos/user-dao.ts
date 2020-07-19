@@ -6,21 +6,15 @@ import { User } from "../models/User";
 import { UserDTOtoUserConvertor } from "../utils/UserDTO-to-User-convertor";
 
 
-export async function getAllUsers(){
+export async function getClassLists(){
     let client:PoolClient;
     try{
         client = await connectionPool.connect();
-        let results: QueryResult = await client.query(`select u.userId, 
-                                    u."username", 
-                                    u."userpassword",
-                                    u."firstname", 
-                                    u."lastname", 
-                                    u."email", 
-                                    u."roleid",
-                                    r."workroles"
-                                    from lsquaredmath.users u natural join lsquaredmath.roles r
-                                    order by u.roleid`);    
-    return results.rows.map(UserDTOtoUserConvertor);//results.rows; //.rows.map(); need to write the UserDTOtoUserConvertor.ts and reference it here.
+        let results: QueryResult = await client.query(`select userid, firstname, 
+                                    lastname, email, roledescription from 
+                                    (sections natural join users natural join roles)`); 
+                                    //where sectionid=${id};`);    after adding login add some code to make this return only what the user has access tonpm 
+    return results.rows.map(UserDTOtoUserConvertor); //results.rows; //.rows.map(); need to write the UserDTOtoUserConvertor.ts and reference it here.
     }catch(e){  //error processing coming soon
         console.log(e);
         throw new Error('un-implemented error handling');
@@ -29,34 +23,6 @@ export async function getAllUsers(){
     }
 }
 
-/*export async function findUserByUsername(uname:string){
-    let client: PoolClient;
-    try{
-        client = await connectionPool.connect();
-        let results: QueryResult = await client.query(`select u.userId,
-                                    u."username",
-                                    u."userpassword",
-                                    u."firstname", 
-                                    u."lastname", 
-                                    u."email", 
-                                    u."roleid" 
-                                    from lsquaredmath.users u
-                                    where u.username = ${uname}`); 
-        if(results.rowCount===0){ 
-            throw new Error('NotFound');
-        }else{
-             return results.rows; //need to write convertor code to format the results nicely
-        }
-    }catch(err){
-        if(err.message === 'NotFound'){
-            throw new UserNotFoundError();
-        }
-        console.log(err);
-            throw new Error('un-implemented error handling');
-    }finally{
-        client && client.release();
-    } 
-}*/
 
 export async function findUserById(id:number){ 
     let client: PoolClient;

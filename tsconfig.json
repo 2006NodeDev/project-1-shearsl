@@ -1,4 +1,4 @@
-{
+  {
     "compilerOptions": {
       "types": ["node"],
       "outDir": "build/dist",
