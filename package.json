@@ -1,7 +1,7 @@
 {
-  "name": "lsquaredmath",
+  "name": "mathplay",
   "version": "1.0.0",
-  "description": "A company that promotes mathematics education with interactive SCORM compliant software, school visits, and games.",
+  "description": "Lsquared Math is a company that promotes mathematics education with interactive SCORM compliant software, school visits, and games.",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",

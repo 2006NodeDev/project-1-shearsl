@@ -28,7 +28,7 @@ userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
         }
         let partialUser:User = { 
             userid: +userid, 
-            username:(username?username:""),                //before the colon is like 'username =', 
+            username:(username?username:""),                //before the colon is like 'username =' since this is a key:value pair, 
             userpassword:(userpassword?userpassword:""),    //(if truthy, then username else "")
             firstname:(firstname?firstname:""),             //having else "" or else 0 causes a falsey value 
             lastname:(lastname?lastname:""),                //which just means that that particular field will 
@@ -50,18 +50,22 @@ userRouter.patch('/', async(req:Request, res:Response, next:NextFunction) =>{
 
 
 
-//save a new user, the user them self can sign up for an account
+//save a new user, the user can sign up for an account with roleid 3 for student
+//teachers and teaching assistants are entered directly into the database by an administrator
+//I wanted to also call the findUserById(0) to try can call the user that was just created to I could make 
+// it display with the proper user id
 userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
     // get input from the user
-    let { username, userpassword, firstname, lastname, email, roleid, sectionid } = req.body //destructuring
+    let { username, userpassword, firstname, lastname, email, sectionid } = req.body //destructuring
 
     //verify the input
-    if (username && userpassword && firstname && lastname && roleid && sectionid){
-        let newUser:User = { userid:0, username, userpassword, firstname, lastname, email, roleid, sectionid }
-        newUser.email = email || null;
+    if (username && userpassword && firstname && lastname && email && sectionid){
+        let newUser:User = { userid:0, username, userpassword, firstname, lastname, email, roleid:3, sectionid }
         try { //try with a function call to the dao layer to try and save the user
-            let savedUser = await saveOneUser(newUser)
-            res.json(savedUser)// needs to have the updated userId
+            let savedUser = await saveOneUser(newUser);  //function in user-dao
+            res.json(savedUser)// needs to have the updated 'userid'
+           // console.log(savedUser.userid);
+           //savedUser = await findUserById(0);
         } catch (e) {
             next(e)
         }
@@ -72,13 +76,13 @@ userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => 
 
 //the teacher can access, the teacher-assistant can access if they are assigned to the class,
 // the student can access their own
-userRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => { 
-    let { id } = req.params;
-    if (isNaN(+id)) {
+userRouter.get('/:userid', async (req: Request, res: Response, next: NextFunction) => { 
+    let { userid } = req.params;
+    if (isNaN(+userid)) {
         next(new UserIdError());
     } else {
         try {
-            let user = await findUserById(+id);
+            let user = await findUserById(+userid);
             res.json(user);
         } catch (e) {
             next(e);
